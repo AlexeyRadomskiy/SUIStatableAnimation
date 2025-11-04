@@ -21,9 +21,6 @@ public struct StatableAnimationModifier: AnimatableModifier {
     /// The current animation state that controls how the animation behaves.
     @Binding private var state: AnimationState
 
-    /// The previous animation state before the most recent update.
-    @State private var previousState: AnimationState = .stopped
-
     // MARK: - Init
 
     /// Creates a new statable animation modifier.
@@ -54,7 +51,6 @@ public extension StatableAnimationModifier {
     func body(content: Content) -> some View {
         content
             .onChange(of: state, perform: updateValue)
-            .onAppear { previousState = state }
     }
 }
 
@@ -65,7 +61,6 @@ private extension StatableAnimationModifier {
     func updateValue(_ state: AnimationState) {
         switch state {
         case .spinning:
-            guard previousState != .spinning else { return }
             withAnimation(
                 .linear(duration: Constants.duration)
                 .repeatForever(autoreverses: false)
